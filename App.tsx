@@ -7,6 +7,7 @@ import {
   ScrollView,
   FlatList,
   AsyncStorage,
+  Alert,
 } from 'react-native';
 import { TextInput, Button, KeyboardAvoidingView } from 'react-native';
 
@@ -65,6 +66,14 @@ export default class App extends React.Component<{}, IState> {
   private onAddItem(): void {
     const title = this.state.inputText;
     if (!title) {
+      Alert.alert("入力エラー", "タイトルが入力されていません",
+        [
+          {
+            text: "キャンセル",
+            onPress: () => {console.log("on ok.")}
+          }
+        ]
+      )
       return;
     }
     const nextIndex = this.state.currentIndex + 1;
