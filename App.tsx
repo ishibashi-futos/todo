@@ -84,14 +84,14 @@ export default class App extends React.Component<{}, IState> {
         <View style={styles.filter}>
           <Text>Filter text Area</Text>
         </View>
-        <ScrollView>
+        <SafeAreaView>
           <FlatList data={this.state.todo}
           renderItem={
             ({item}) => <Text>{item.title}</Text>
           }
           keyExtractor={(item) => `todo_${item.index}`}
           ></FlatList>
-        </ScrollView>
+        </SafeAreaView>
         <View style={styles.input}>
           <TextInput
             onChangeText={(text) => {
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     paddingTop: 50,
-    paddingBottom: 75,
+    paddingBottom: 100,
   },
   filter: {
     height: 30,
