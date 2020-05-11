@@ -10,15 +10,16 @@ import {
   Alert,
 } from 'react-native';
 import { TextInput, Button, KeyboardAvoidingView } from 'react-native';
+import ToDo from './components/ToDo';
 
-interface ToDo {
+interface IToDo {
   index: number
   title: string
   done: boolean
 }
 
 interface IState {
-  todo: ToDo[]
+  todo: IToDo[]
   currentIndex: number
   inputText: string
 }
@@ -39,6 +40,7 @@ export default class App extends React.Component<{}, IState> {
     }
     this.render = this.render.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
+    this.onPressToDoItem = this.onPressToDoItem.bind(this);
   }
 
   componentDidMount() {
@@ -87,6 +89,17 @@ export default class App extends React.Component<{}, IState> {
     this.saveTodo(newState);
   }
 
+  private onPressToDoItem = (todoItem: IToDo) => {
+    return () => {
+      const todos = this.state.todo;
+      const index = todos.indexOf(todoItem);
+      todoItem.done = !todoItem.done;
+      todos[index] = todoItem;
+      this.setState({todo: todos});
+      this.saveTodo({...this.state, todo: todos});
+    }
+  }
+
   public render = (): JSX.Element => {
     return (
       <KeyboardAvoidingView style={styles.container}>
@@ -96,7 +109,14 @@ export default class App extends React.Component<{}, IState> {
         <SafeAreaView>
           <FlatList data={this.state.todo}
           renderItem={
-            ({item}) => <Text>{item.title}</Text>
+            ({item}) => {
+              return (
+                <ToDo title={item.title}
+                  done={item.done}
+                  onPress={this.onPressToDoItem(item)}>
+                </ToDo>
+              )
+            }
           }
           keyExtractor={(item) => `todo_${item.index}`}
           ></FlatList>
