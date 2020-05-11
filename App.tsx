@@ -1,5 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, Text, SafeAreaView, ScrollView, FlatList } from 'react-native';
+import { 
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
+  FlatList,
+  AsyncStorage,
+} from 'react-native';
 import { TextInput, Button, KeyboardAvoidingView } from 'react-native';
 
 interface ToDo {
@@ -13,6 +21,9 @@ interface IState {
   currentIndex: number
   inputText: string
 }
+
+/** ToDoを保存するストレージキー */
+const STORAGE_TODO_KEY = "@todoapp.todo"
 
 export default class App extends React.Component<{}, IState> {
   constructor(prop: any) {
@@ -29,6 +40,28 @@ export default class App extends React.Component<{}, IState> {
     this.onAddItem = this.onAddItem.bind(this);
   }
 
+  componentDidMount() {
+    this.loadTodo();
+  }
+
+  private async loadTodo() {
+    try {
+      const todostr = await AsyncStorage.getItem(STORAGE_TODO_KEY);
+      if (todostr) {
+        const todo: IState = JSON.parse(todostr);
+        const currentIndex = todo.currentIndex;
+        this.setState({...todo});
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  private async saveTodo(state: IState) {
+    const todostr = JSON.stringify(state);
+    await AsyncStorage.setItem(STORAGE_TODO_KEY, todostr);
+  }
+
   private onAddItem(): void {
     const title = this.state.inputText;
     if (!title) {
@@ -36,11 +69,13 @@ export default class App extends React.Component<{}, IState> {
     }
     const nextIndex = this.state.currentIndex + 1;
     const newTodos = [...this.state.todo, {index: nextIndex, title: title, done: false}];
-    this.setState({
+    const newState = {
       todo: newTodos,
       currentIndex: nextIndex,
       inputText: "",
-    });
+    }
+    this.setState(newState);
+    this.saveTodo(newState);
   }
 
   public render = (): JSX.Element => {
@@ -80,7 +115,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     paddingTop: 50,
-    paddingBottom: 50,
+    paddingBottom: 75,
   },
   filter: {
     height: 30,
