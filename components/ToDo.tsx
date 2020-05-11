@@ -1,6 +1,8 @@
 import React from 'react';
 import { 
-  StyleSheet, TouchableOpacity, Text
+  StyleSheet,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 
 export interface IToDo {
