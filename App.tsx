@@ -123,18 +123,20 @@ export default class App extends React.Component<{}, IState> {
           />
         </View>
         <SafeAreaView>
-          <FlatList data={todo}
-          renderItem={
-            ({item}) => {
-              return (
-                <ToDo title={item.title}
-                  done={item.done}
-                  onPress={this.onPressToDoItem(item)}>
-                </ToDo>
-              )
+          <FlatList
+            data={todo}
+            extraData={this.state.todo}
+            renderItem={
+              ({item}) => {
+                return (
+                  <ToDo title={item.title}
+                    done={item.done}
+                    onPress={this.onPressToDoItem(item)}>
+                  </ToDo>
+                )
+              }
             }
-          }
-          keyExtractor={(item) => `todo_${item.index}`}
+            keyExtractor={(item) => `todo_${item.index}`}
           ></FlatList>
         </SafeAreaView>
         <View style={styles.input}>
