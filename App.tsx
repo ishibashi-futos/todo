@@ -22,6 +22,7 @@ interface IState {
   todo: IToDo[]
   currentIndex: number
   inputText: string
+  filterText: string
 }
 
 /** ToDoを保存するストレージキー */
@@ -37,6 +38,7 @@ export default class App extends React.Component<{}, IState> {
       ],
       currentIndex: 1,
       inputText: "",
+      filterText: "",
     }
     this.render = this.render.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
@@ -84,6 +86,7 @@ export default class App extends React.Component<{}, IState> {
       todo: newTodos,
       currentIndex: nextIndex,
       inputText: "",
+      filterText: "",
     }
     this.setState(newState);
     this.saveTodo(newState);
@@ -101,13 +104,26 @@ export default class App extends React.Component<{}, IState> {
   }
 
   public render = (): JSX.Element => {
+    const filterText = this.state.filterText;
+    console.log(filterText)
+    const todo = filterText !== "" ? this.state.todo.filter(todo => {
+      return todo.title.startsWith(filterText)
+    }) : this.state.todo;
     return (
       <KeyboardAvoidingView style={styles.container}>
         <View style={styles.filter}>
-          <Text>Filter text Area</Text>
+          <TextInput
+            onChangeText={text => {
+              const filterText = text.trimEnd();
+              this.setState({filterText})
+            }}
+            value={this.state.filterText}
+            style={styles.inputText}
+            placeholder={"Type filter text"}
+          />
         </View>
         <SafeAreaView>
-          <FlatList data={this.state.todo}
+          <FlatList data={todo}
           renderItem={
             ({item}) => {
               return (
@@ -142,12 +158,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
     paddingTop: 50,
     paddingBottom: 100,
   },
   filter: {
     height: 30,
+    flexDirection: 'row',
   },
   todolist: {
     flex: 1,
