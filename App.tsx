@@ -2,14 +2,14 @@ import React from 'react';
 import { 
   StyleSheet,
   View,
-  Text,
   SafeAreaView,
-  ScrollView,
   FlatList,
   AsyncStorage,
   Alert,
+  TextInput,
+  Button,
+  KeyboardAvoidingView
 } from 'react-native';
-import { TextInput, Button, KeyboardAvoidingView } from 'react-native';
 import ToDo from './components/ToDo';
 
 interface IToDo {
